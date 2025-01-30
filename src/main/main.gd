@@ -87,6 +87,10 @@ func PopulateSongsList()->void:
 		dirAccess.list_dir_begin()
 		folderName = dirAccess.get_next()
 		while folderName != "":
+			if !dirAccess.current_is_dir():
+				# not a directory, advance
+				folderName = dirAccess.get_next()
+				continue
 			var beatmapPath:String = songsDir + "/" + folderName
 			parser.GetMetaData(song, beatmapPath)
 			var newSong = songsInst.instantiate()

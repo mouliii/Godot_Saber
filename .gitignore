@@ -2,6 +2,7 @@
 .godot/
 /android/
 songs/
+!songs/.gitkeep
 gdextension/godot-cpp
 gdextension/.*
 gdextension/msvc*
