@@ -1,0 +1,39 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dxknfxrpaep0m"]
+
+[sub_resource type="Shader" id="Shader_8tqh2"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.3.stable.mono's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
+
+instance uniform vec3 baseColor:source_color;
+uniform vec3 fresnelColor:source_color;
+
+float fresnel(float amount, vec3 normal, vec3 view)
+{
+	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
+}
+
+vec3 fresnel_glow(float amount, float intensity, vec3 color, vec3 normal, vec3 view)
+{
+	return pow((1.0 - dot(normalize(normal), normalize(view))), amount) * color * intensity;
+}
+
+void vertex()
+{
+
+}
+
+void fragment()
+{
+	vec3 fresnelCol = fresnel_glow(8.0, 4.5, fresnelColor, NORMAL, VIEW);
+	float fr = fresnel(3.0f, NORMAL, VIEW);
+	ALBEDO = baseColor + fresnelCol;
+	EMISSION = fresnelCol;
+}
+"
+
+[resource]
+render_priority = 0
+shader = SubResource("Shader_8tqh2")
+shader_parameter/fresnelColor = Color(1, 1, 1, 1)

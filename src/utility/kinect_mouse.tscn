@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://4uuljd8qnlk5"]
+
+[ext_resource type="Script" path="res://src/utility/kinect_mouse.gd" id="1_0cxh6"]
+[ext_resource type="Texture2D" uid="uid://dmvpxl0iene38" path="res://textures/circle.png" id="3_qyijr"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_knbnt"]
+
+[sub_resource type="Sky" id="Sky_14g5e"]
+sky_material = SubResource("ProceduralSkyMaterial_knbnt")
+
+[sub_resource type="Environment" id="Environment_7g7vs"]
+background_mode = 2
+sky = SubResource("Sky_14g5e")
+ambient_light_sky_contribution = 0.5
+tonemap_mode = 3
+glow_enabled = true
+
+[node name="Kinect_Mouse" type="Node3D"]
+script = ExtResource("1_0cxh6")
+
+[node name="KinectWrapper" type="KinectWrapper" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_7g7vs")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.92639, 0)
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer"]
+offset_left = 954.0
+offset_top = 447.0
+offset_right = 1018.0
+offset_bottom = 511.0
+scale = Vector2(1.5, 1.5)
+mouse_filter = 2
+fill_mode = 4
+texture_under = ExtResource("3_qyijr")
+texture_progress = ExtResource("3_qyijr")
+tint_under = Color(0.40625, 0.40625, 0.40625, 1)
+tint_progress = Color(0, 1, 0.118933, 1)

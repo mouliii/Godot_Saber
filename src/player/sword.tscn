@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://bkoywto1m04ei"]
+
+[ext_resource type="Script" path="res://src/player/sword.gd" id="1_51j6g"]
+[ext_resource type="PackedScene" uid="uid://dp7u4qq2dupb8" path="res://models/sword.blend" id="1_77iu7"]
+[ext_resource type="Material" uid="uid://dxknfxrpaep0m" path="res://shaders/sword.tres" id="3_tcg42"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0vabp"]
+size = Vector3(0.0715027, 0.069458, 1.0332)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyhg3"]
+albedo_color = Color(0.261719, 0.261719, 0.261719, 1)
+
+[node name="Sword" type="Area3D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_51j6g")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000259399, -0.000915527, -0.401367)
+shape = SubResource("BoxShape3D_0vabp")
+
+[node name="sword" parent="." instance=ExtResource("1_77iu7")]
+
+[node name="Sword" parent="sword" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_vyhg3")
+
+[node name="Cylinder" parent="sword" index="1"]
+surface_material_override/0 = ExtResource("3_tcg42")
+
+[editable path="sword"]

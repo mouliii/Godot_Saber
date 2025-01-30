@@ -1,0 +1,464 @@
+[gd_scene load_steps=25 format=3 uid="uid://bgmk0fewdd0t1"]
+
+[ext_resource type="Script" path="res://src/main/main.gd" id="1_0v1kk"]
+[ext_resource type="Script" path="res://src/main/block_handler.gd" id="2_stns6"]
+[ext_resource type="PackedScene" uid="uid://d0sb623q1f8tt" path="res://models/map.blend" id="2_uhnak"]
+[ext_resource type="Script" path="res://src/utility/USBComm.cs" id="3_soi1o"]
+[ext_resource type="PackedScene" uid="uid://darctcym27gxw" path="res://src/player/Player.tscn" id="4_86oo4"]
+[ext_resource type="PackedScene" uid="uid://cs07x3v2or657" path="res://src/main/cam_controller.tscn" id="4_lxcw4"]
+[ext_resource type="Script" path="res://src/ui/ui.gd" id="4_q8y7q"]
+[ext_resource type="Texture2D" uid="uid://c00sfsfsin1" path="res://icon.svg" id="5_eftnd"]
+[ext_resource type="Script" path="res://src/ui/main_menu.gd" id="6_pt37d"]
+[ext_resource type="PackedScene" uid="uid://4uuljd8qnlk5" path="res://src/utility/kinect_mouse.tscn" id="7_w128u"]
+[ext_resource type="Script" path="res://src/ui/calib_menu.gd" id="8_lc6mm"]
+[ext_resource type="Shader" path="res://src/shaders/depthCam.gdshader" id="11_k6e1o"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tks30"]
+albedo_color = Color(0, 1, 0.0178611, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_usniw"]
+size = Vector3(4.565, 7.74, 0.01)
+
+[sub_resource type="SphereMesh" id="SphereMesh_n3qdj"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_yhy7k"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_j8khr"]
+size = Vector2(0.05, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_26c1l"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orm01"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0306m"]
+shader = ExtResource("11_k6e1o")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_otx6k"]
+
+[sub_resource type="Sky" id="Sky_v182l"]
+sky_material = SubResource("ProceduralSkyMaterial_otx6k")
+
+[sub_resource type="Environment" id="Environment_tjgxj"]
+background_mode = 2
+sky = SubResource("Sky_v182l")
+ambient_light_sky_contribution = 0.5
+tonemap_mode = 3
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f8qng"]
+size = Vector3(6.56738, 5.84332, 1)
+
+[node name="Main" type="Node3D"]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+script = ExtResource("1_0v1kk")
+songsDir = "res://songs"
+
+[node name="BlockHandler" type="Node" parent="."]
+script = ExtResource("2_stns6")
+
+[node name="KinectWrapper" type="KinectWrapper" parent="."]
+SmoothValue = 0.169
+CorrectionValue = 0.708
+PredictionValue = 1.0
+JitterRadius = 0.105
+
+[node name="USBComm" type="Node" parent="."]
+script = ExtResource("3_soi1o")
+
+[node name="Node" type="Node" parent="."]
+
+[node name="wall_0_0" type="MeshInstance3D" parent="Node"]
+visible = false
+material_override = SubResource("StandardMaterial3D_tks30")
+mesh = SubResource("BoxMesh_usniw")
+
+[node name="playerpos" type="MeshInstance3D" parent="Node"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0.5)
+visible = false
+mesh = SubResource("SphereMesh_n3qdj")
+
+[node name="Box" type="MeshInstance3D" parent="Node"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.607084, -1.70964)
+visible = false
+mesh = SubResource("BoxMesh_yhy7k")
+
+[node name="map" parent="." instance=ExtResource("2_uhnak")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
+mesh = SubResource("PlaneMesh_j8khr")
+surface_material_override/0 = SubResource("StandardMaterial3D_26c1l")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="map"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.001, 0)
+mesh = SubResource("PlaneMesh_j8khr")
+surface_material_override/0 = SubResource("StandardMaterial3D_orm01")
+
+[node name="Blocks" type="Node3D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("4_86oo4")]
+
+[node name="CamController" parent="." node_paths=PackedStringArray("camTarget") instance=ExtResource("4_lxcw4")]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 2, -2)
+camTarget = NodePath("../Player/Head")
+DEBUG_MODE = true
+
+[node name="Kinect_Mouse" parent="." node_paths=PackedStringArray("kinect") instance=ExtResource("7_w128u")]
+kinect = NodePath("../KinectWrapper")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("4_q8y7q")
+
+[node name="MainMenu" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_pt37d")
+
+[node name="Label" type="Label" parent="CanvasLayer/MainMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.247
+offset_right = -0.00012207
+theme_override_font_sizes/font_size = 96
+text = "Godo Saber"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.073
+anchor_top = 0.299
+anchor_right = 0.351
+anchor_bottom = 0.794
+theme_override_constants/separation = 20
+
+[node name="SongListBtn" type="Button" parent="CanvasLayer/MainMenu/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 51
+text = "Song list"
+
+[node name="CalibBtn" type="Button" parent="CanvasLayer/MainMenu/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 51
+text = "Calibrate"
+
+[node name="QuitBtn" type="Button" parent="CanvasLayer/MainMenu/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 51
+text = "Quit"
+
+[node name="ControllerStatus" type="VBoxContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.743
+anchor_top = 0.072
+anchor_right = 0.947
+anchor_bottom = 0.677
+metadata/_edit_use_anchors_ = true
+
+[node name="Title" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 41
+text = "Controller status"
+
+[node name="Kinect" type="HBoxContainer" parent="CanvasLayer/MainMenu/ControllerStatus"]
+layout_mode = 2
+
+[node name="Label1" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus/Kinect"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Kinect"
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus/Kinect"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Disconnected"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LHand" type="HBoxContainer" parent="CanvasLayer/MainMenu/ControllerStatus"]
+layout_mode = 2
+
+[node name="Label1" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus/LHand"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Left hand"
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus/LHand"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Disconnected"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RHand" type="HBoxContainer" parent="CanvasLayer/MainMenu/ControllerStatus"]
+layout_mode = 2
+
+[node name="Label1" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus/RHand"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Right hand"
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="CanvasLayer/MainMenu/ControllerStatus/RHand"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Disconnected"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CalibMenu" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_lc6mm")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/CalibMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0327475
+anchor_top = 0.416481
+anchor_right = 0.390747
+anchor_bottom = 0.638481
+offset_left = -0.840004
+offset_top = 0.200012
+offset_bottom = 0.440002
+theme_override_constants/separation = 40
+metadata/_edit_use_anchors_ = true
+
+[node name="Button" type="Button" parent="CanvasLayer/CalibMenu/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 51
+text = "Calibrate"
+
+[node name="BackBtn" type="Button" parent="CanvasLayer/CalibMenu/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 51
+text = "Back"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CalibMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.06
+anchor_top = 0.088
+anchor_right = 0.846
+anchor_bottom = 0.267
+offset_left = 0.199997
+offset_top = -0.0400085
+offset_right = -0.0800781
+
+[node name="Distance" type="HBoxContainer" parent="CanvasLayer/CalibMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CalibMenu/VBoxContainer/Distance"]
+custom_minimum_size = Vector2(300, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "distance offset"
+
+[node name="Label2" type="Label" parent="CanvasLayer/CalibMenu/VBoxContainer/Distance"]
+custom_minimum_size = Vector2(250, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "0"
+
+[node name="Rotation" type="HBoxContainer" parent="CanvasLayer/CalibMenu/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CalibMenu/VBoxContainer/Rotation"]
+custom_minimum_size = Vector2(300, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "rotation offset"
+
+[node name="Label2" type="Label" parent="CanvasLayer/CalibMenu/VBoxContainer/Rotation"]
+custom_minimum_size = Vector2(250, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "0"
+
+[node name="CalibCountDown" type="Control" parent="CanvasLayer/CalibMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CalibMenu/CalibCountDown"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -43.0
+offset_top = -102.5
+offset_right = 43.0
+offset_bottom = 102.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 150
+text = "5"
+
+[node name="SongMenu" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/SongMenu"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.119
+anchor_top = 0.076
+anchor_right = 0.5
+anchor_bottom = 0.905
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AllSongs" type="VBoxContainer" parent="CanvasLayer/SongMenu/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightSide" type="Control" parent="CanvasLayer/SongMenu"]
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 144.0
+offset_top = 91.0
+offset_right = -106.0
+offset_bottom = -87.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SelectedSongCover" type="TextureRect" parent="CanvasLayer/SongMenu/RightSide"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.151515
+anchor_top = 0.375926
+anchor_right = 0.8
+anchor_bottom = 0.958333
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+texture = ExtResource("5_eftnd")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/SongMenu/RightSide"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Buttons" type="HBoxContainer" parent="CanvasLayer/SongMenu/RightSide/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="CanvasLayer/SongMenu/RightSide/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(256, 128)
+layout_mode = 2
+theme_override_font_sizes/font_size = 66
+text = "Back"
+
+[node name="EmptyFiller" type="Label" parent="CanvasLayer/SongMenu/RightSide/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="CanvasLayer/SongMenu/RightSide/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(256, 128)
+layout_mode = 2
+theme_override_font_sizes/font_size = 66
+text = "Start
+"
+
+[node name="Label" type="Label" parent="CanvasLayer/SongMenu/RightSide/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="DifficultySelector" type="OptionButton" parent="CanvasLayer/SongMenu/RightSide/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_0306m")
+position = Vector2(995, 912)
+scale = Vector2(2.98438, 2.23438)
+texture = ExtResource("5_eftnd")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tjgxj")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 3.82137e-15, -3.82137e-15, 4.37114e-08, 1, 0, -1, 4.37114e-08, -4.54478e-07, 5.50529, 5.19863)
+visible = false
+spot_range = 8.333
+spot_attenuation = 2.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.57345e-07, 4.89527, 4.08754)
+omni_range = 11.4341
+
+[node name="BlockCatcher" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.47898e-07, 0, -5.12335)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BlockCatcher"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.128418, -0.186188, 0)
+shape = SubResource("BoxShape3D_f8qng")
+
+[node name="KinectConnect" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/SongListBtn" to="CanvasLayer" method="_on_song_list_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/CalibBtn" to="CanvasLayer" method="_on_calib_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/QuitBtn" to="CanvasLayer/MainMenu" method="_on_quit_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/CalibMenu/VBoxContainer2/Button" to="CanvasLayer/CalibMenu" method="_on_button_pressed"]
+[connection signal="timeout" from="KinectConnect" to="." method="_on_kinect_connect_timeout"]
+
+[editable path="map"]
+[editable path="Player"]

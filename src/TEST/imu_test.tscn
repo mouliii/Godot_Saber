@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://eggkhmckhlbt"]
+
+[ext_resource type="Script" path="res://src/TEST/imu_test.gd" id="1_aq4xo"]
+[ext_resource type="Script" path="res://src/utility/USBComm.cs" id="2_obm2f"]
+[ext_resource type="PackedScene" uid="uid://cs07x3v2or657" path="res://src/main/cam_controller.tscn" id="3_35lry"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tkh2c"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_8bqfl"]
+height = 1.5
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_olnqf"]
+
+[sub_resource type="Sky" id="Sky_s7p6p"]
+sky_material = SubResource("ProceduralSkyMaterial_olnqf")
+
+[sub_resource type="Environment" id="Environment_mldes"]
+background_mode = 2
+sky = SubResource("Sky_s7p6p")
+ambient_light_sky_contribution = 0.5
+tonemap_mode = 3
+glow_enabled = true
+
+[node name="IMU_TEST" type="Node3D"]
+script = ExtResource("1_aq4xo")
+
+[node name="OLKA" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+mesh = SubResource("BoxMesh_tkh2c")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="OLKA"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.874443)
+mesh = SubResource("CylinderMesh_8bqfl")
+
+[node name="KYYNAR" type="MeshInstance3D" parent="OLKA/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -1.19568, 5.22646e-08)
+mesh = SubResource("BoxMesh_tkh2c")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="OLKA/MeshInstance3D/KYYNAR"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.874443)
+mesh = SubResource("CylinderMesh_8bqfl")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="OLKA/MeshInstance3D/KYYNAR/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -1.19568, 5.22646e-08)
+mesh = SubResource("BoxMesh_tkh2c")
+skeleton = NodePath("../../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_mldes")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.92639, 0)
+
+[node name="USBComm" type="Node" parent="."]
+script = ExtResource("2_obm2f")
+
+[node name="CamController" parent="." instance=ExtResource("3_35lry")]
+transform = Transform3D(1, 0, 0, 0, 0.94954, 0.313644, 0, -0.313644, 0.94954, 0, 1.32227, 1.83717)

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cs07x3v2or657"]
+
+[ext_resource type="Script" path="res://src/main/cam_controller.gd" id="1_i1kdk"]
+
+[node name="CamController" type="Node3D"]
+script = ExtResource("1_i1kdk")
+vel = 4.0
+
+[node name="PivotPoint" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="PivotPoint"]
+current = true
+fov = 90.0

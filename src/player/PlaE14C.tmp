@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://darctcym27gxw"]
+
+[ext_resource type="Script" path="res://src/player/player.gd" id="1_2i37v"]
+[ext_resource type="PackedScene" uid="uid://bkoywto1m04ei" path="res://src/player/sword.tscn" id="2_33khs"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dryf3"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_2i37v")
+
+[node name="Blocks" type="Node3D" parent="."]
+
+[node name="BaseBlock" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_dryf3")
+
+[node name="Head" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="KinectOffs" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="SwordLeft" parent="." instance=ExtResource("2_33khs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.576424, 0.574609, -0.469636)
+
+[node name="SwordRight" parent="." instance=ExtResource("2_33khs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.504136, 0.586646, -0.508567)
